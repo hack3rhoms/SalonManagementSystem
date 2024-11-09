@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalonManagementSystem", "SalonManagementSystem\SalonManagementSystem.csproj", "{DBCADD83-6A7A-42AB-B9D5-5F854597CCD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DBCADD83-6A7A-42AB-B9D5-5F854597CCD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBCADD83-6A7A-42AB-B9D5-5F854597CCD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBCADD83-6A7A-42AB-B9D5-5F854597CCD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBCADD83-6A7A-42AB-B9D5-5F854597CCD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E5DD173D-6A72-4A21-802F-8EE4FE94CCCC}
+	EndGlobalSection
+EndGlobal
