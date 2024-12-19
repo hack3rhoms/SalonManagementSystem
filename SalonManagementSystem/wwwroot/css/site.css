@@ -1,18 +1,31 @@
-html {
-  font-size: 14px;
+﻿/* تأثير Hover للبطاقات */
+.card:hover {
+    transform: translateY(-10px); /* تحريك البطاقة للأعلى */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* إضافة ظل عند المرور على البطاقة */
+    transition: all 0.3s ease-in-out; /* إضافة انتقال سلس */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/* تأثير Hover على الأزرار */
+.btn:hover {
+    background-color: #f39c12; /* تغيير اللون إلى لون مختلف عند المرور */
+    color: #fff; /* تغيير النص إلى اللون الأبيض */
+    transform: scale(1.05); /* تكبير الأزرار قليلاً */
+    transition: all 0.3s ease; /* إضافة تأثير الانتقال */
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+/* تأثير Hover على الصور داخل البطاقة */
+.card-img-top:hover {
+    transform: scale(1.1); /* تكبير الصورة عند المرور عليها */
+    transition: all 0.3s ease; /* تأثير الانتقال السلس */
 }
 
-body {
-  margin-bottom: 60px;
+/* تأثير Hover على نص البطاقة */
+.card:hover .card-title {
+    color: #f39c12; /* تغيير اللون عند المرور */
+    transition: color 0.3s ease; /* تأثير الانتقال السلس */
+}
+
+/* تحسين التنسيق النصي */
+.card-body p {
+    font-size: 1.1rem;
 }
