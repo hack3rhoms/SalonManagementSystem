@@ -1,0 +1,67 @@
+﻿@model SalonManagementSystem.Models.Employee
+
+<h2>Add New Employee</h2>
+
+@if (ViewBag.BookedSlots != null)
+{
+    <div class="alert alert-warning">
+        <strong>Booked Slots:</strong>
+        <ul>
+            @foreach (var slot in ViewBag.BookedSlots)
+            {
+                <li>@slot.StartWorkingHours - @slot.EndWorkingHours</li>
+            }
+        </ul>
+    </div>
+}
+
+<form asp-action="AddEmployee" method="post">
+    <div class="form-group">
+        <label for="Name">Name</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="Specialization">Specialization</label>
+        <input asp-for="Specialization" class="form-control" />
+        <span asp-validation-for="Specialization" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="StartWorkingHours">Start Working Hours</label>
+        <input asp-for="StartWorkingHours" type="time" class="form-control" />
+        <span asp-validation-for="StartWorkingHours" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="EndWorkingHours">End Working Hours</label>
+        <input asp-for="EndWorkingHours" type="time" class="form-control" />
+        <span asp-validation-for="EndWorkingHours" class="text-danger"></span>
+    </div>
+        <button type="submit" class="btn btn-primary mt-3">Add Employee</button>
+    </form>
+
+<script>
+    // ساعات العمل المحجوزة التي تم إرسالها من الخادم
+    const bookedSlots = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.BookedSlots));
+
+    // استمع لتغيير وقت البداية
+    document.getElementById("StartWorkingHours").addEventListener("change", function () {
+        const startTime = this.value;
+        const endInput = document.getElementById("EndWorkingHours");
+
+        // تحقق من تضارب الساعات
+        let isConflict = false;
+        bookedSlots.forEach(slot => {
+            if (startTime >= slot.StartWorkingHours && startTime < slot.EndWorkingHours) {
+                isConflict = true;
+            }
+        });
+
+        if (isConflict) {
+            alert("This time slot is already booked. Please choose a different time.");
+            endInput.value = ""; // إعادة ضبط حقل النهاية
+            endInput.disabled = true; // تعطيل اختيار وقت النهاية
+        } else {
+            endInput.disabled = false; // تمكين حقل وقت النهاية
+        }
+    });
+</script>

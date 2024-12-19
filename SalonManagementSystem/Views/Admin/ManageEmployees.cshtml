@@ -1,0 +1,27 @@
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <!-- Add Employee Card -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-lg border-light rounded">
+                <img src="~/image/Add.png" class="card-img-top" alt="Add Employee">
+                <div class="card-body">
+                    <h5 class="card-title text-dark">Add New Employee</h5>
+                    <p class="card-text text-muted">Add a new employee to the salon.</p>
+                    <a href="@Url.Action("AddEmployee", "Admin")" class="btn btn-warning btn-block">Add Employee</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Employees Card -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-lg border-light rounded">
+                <img src="~/image/View_Employees.png" class="card-img-top" alt="View Employees">
+                <div class="card-body">
+                    <h5 class="card-title text-dark">View Employees</h5>
+                    <p class="card-text text-muted">View the list of employees.</p>
+                    <a href="@Url.Action("ManageEmployees", "Admin")" class="btn btn-info btn-block">View Employees</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
