@@ -2,7 +2,7 @@
 
 <h2>Add New Employee</h2>
 
-@if (ViewBag.BookedSlots != null)
+@* @if (ViewBag.BookedSlots != null)
 {
     <div class="alert alert-warning">
         <strong>Booked Slots:</strong>
@@ -13,7 +13,7 @@
             }
         </ul>
     </div>
-}
+} *@
 
 <form asp-action="AddEmployee" method="post">
     <div class="form-group">
@@ -21,47 +21,63 @@
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+
     <div class="form-group">
-        <label for="Specialization">Specialization</label>
-        <input asp-for="Specialization" class="form-control" />
-        <span asp-validation-for="Specialization" class="text-danger"></span>
+        <label for="ServiceId">Service</label>
+        <select asp-for="ServiceId" class="form-control">
+            <option value="">Select a service</option>
+            @foreach (var service in ViewBag.Services)
+            {
+                <option value="@service.Id">@service.Name</option>
+            }
+        </select>
+        <span asp-validation-for="ServiceId" class="text-danger"></span>
     </div>
+
+
     <div class="form-group">
         <label for="StartWorkingHours">Start Working Hours</label>
-        <input asp-for="StartWorkingHours" type="time" class="form-control" />
+        <select asp-for="StartWorkingHours" class="form-control" id="StartWorkingHours">
+            <option value="">Select a start time</option>
+            @foreach (var slot in ViewBag.AvailableSlots)
+            {
+                <option value="@slot">@slot</option>
+            }
+        </select>
         <span asp-validation-for="StartWorkingHours" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label for="EndWorkingHours">End Working Hours</label>
-        <input asp-for="EndWorkingHours" type="time" class="form-control" />
+        <select asp-for="EndWorkingHours" class="form-control" id="EndWorkingHours">
+            <option value="">Select an end time</option>
+            @foreach (var slot in ViewBag.AvailableSlots)
+            {
+                <option value="@slot">@slot</option>
+            }
+        </select>
         <span asp-validation-for="EndWorkingHours" class="text-danger"></span>
     </div>
-        <button type="submit" class="btn btn-primary mt-3">Add Employee</button>
-    </form>
+    <button type="submit" class="btn btn-primary mt-3">Add Employee</button>
+</form>
 
-<script>
-    // ساعات العمل المحجوزة التي تم إرسالها من الخادم
+@* <script>
     const bookedSlots = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.BookedSlots));
-
-    // استمع لتغيير وقت البداية
     document.getElementById("StartWorkingHours").addEventListener("change", function () {
         const startTime = this.value;
         const endInput = document.getElementById("EndWorkingHours");
 
-        // تحقق من تضارب الساعات
-        let isConflict = false;
-        bookedSlots.forEach(slot => {
-            if (startTime >= slot.StartWorkingHours && startTime < slot.EndWorkingHours) {
-                isConflict = true;
+        // إعادة تعيين الخيارات لنهاية العمل
+        endInput.innerHTML = "<option value=''>Select an end time</option>";
+
+        // حساب الأوقات المتاحة لنهاية العمل بناءً على وقت البداية
+        const availableSlots = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.AvailableSlots));
+        availableSlots.forEach(slot => {
+            if (slot > startTime) {
+                const option = document.createElement("option");
+                option.value = slot;
+                option.textContent = slot;
+                endInput.appendChild(option);
             }
         });
-
-        if (isConflict) {
-            alert("This time slot is already booked. Please choose a different time.");
-            endInput.value = ""; // إعادة ضبط حقل النهاية
-            endInput.disabled = true; // تعطيل اختيار وقت النهاية
-        } else {
-            endInput.disabled = false; // تمكين حقل وقت النهاية
-        }
     });
-</script>
+</script> *@

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<SalonManagementSystem.Models.Employee>
+
+<h2>Employee List</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Specialization (Service)</th>
+            <th>Start Working Hours</th>
+            <th>End Working Hours</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Service?.Name</td> <!-- عرض اسم الخدمة المرتبطة -->
+                <td>@employee.StartWorkingHours</td>
+                <td>@employee.EndWorkingHours</td>
+                <td>
+                    <a href="@Url.Action("EditEmployee", "Admin", new { id = employee.Id })" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="@Url.Action("DeleteEmployee", "Admin", new { id = employee.Id })" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

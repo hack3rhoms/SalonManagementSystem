@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SalonManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241220181505_AddDurationToServices")]
+    partial class AddDurationToServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,9 +38,6 @@ namespace SalonManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Specialization")
                         .IsRequired()
                         .HasColumnType("text");
@@ -47,8 +46,6 @@ namespace SalonManagementSystem.Migrations
                         .HasColumnType("interval");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ServiceId");
 
                     b.ToTable("Employees");
                 });
@@ -74,17 +71,6 @@ namespace SalonManagementSystem.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Services");
-                });
-
-            modelBuilder.Entity("SalonManagementSystem.Models.Employee", b =>
-                {
-                    b.HasOne("SalonManagementSystem.Models.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Service");
                 });
 #pragma warning restore 612, 618
         }
