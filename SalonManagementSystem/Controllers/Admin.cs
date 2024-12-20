@@ -2,13 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using SalonManagementSystem.Models;
 
-
-
 namespace SalonManagementSystem.Controllers
 {
     public class Admin : Controller
     {
         private readonly ApplicationDbContext _context;
+
         public Admin(ApplicationDbContext context)
         {
             _context = context;
@@ -23,7 +22,6 @@ namespace SalonManagementSystem.Controllers
         {
             return View();
         }
-
 
         // Add new Employee
         public IActionResult AddEmployee()
@@ -59,9 +57,33 @@ namespace SalonManagementSystem.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddEmployee(Employee employee)
+        {
+            // البحث عن تضارب الساعات
+            var conflictingSlots = _context.Employees
+                .Where(e =>
+                    (employee.StartWorkingHours < e.EndWorkingHours && employee.EndWorkingHours > e.StartWorkingHours))
+                .ToList();
 
+            if (conflictingSlots.Any())
+            {
+                // إذا كان هناك تضارب، أعرض رسالة خطأ وأعد الساعات المحجوزة للعرض في الواجهة
+                ModelState.AddModelError("", "The selected time slot is not available. Please choose a different time.");
+                ViewBag.BookedSlots = conflictingSlots.Select(e => new { e.StartWorkingHours, e.EndWorkingHours });
+                return View(employee);
+            }
+            if (ModelState.IsValid)
+            {
+                _context.Employees.Add(employee);
+                _context.SaveChanges();
+                return RedirectToAction("ManageEmployees");
+            }
+            return View(employee);
+        }
 
-        // view 
+        // View Employees
         public IActionResult ViewEmployees()
         {
             // استرجاع جميع الموظفين مع الخدمات المرتبطة
@@ -73,13 +95,13 @@ namespace SalonManagementSystem.Controllers
             return View(employees);
         }
 
-        // ManageServices
-
+        // Manage Services
         public IActionResult ManageServices()
         {
             // عرض صفحة إنشاء خدمة جديدة
             return View();
         }
+
         public IActionResult AddService()
         {
             return View();
@@ -98,13 +120,11 @@ namespace SalonManagementSystem.Controllers
             return View(service);
         }
 
-        // صفحة عرض الخدمات
+        // View Services
         public IActionResult ViewServices()
         {
             var services = _context.Services.ToList();
             return View(services);
         }
-
-       
     }
 }

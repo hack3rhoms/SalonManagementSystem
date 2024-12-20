@@ -36,9 +36,12 @@ namespace SalonManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+<<<<<<< HEAD
                     b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
+=======
+>>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
                     b.Property<string>("Specialization")
                         .IsRequired()
                         .HasColumnType("text");
@@ -48,6 +51,7 @@ namespace SalonManagementSystem.Migrations
 
                     b.HasKey("Id");
 
+<<<<<<< HEAD
                     b.HasIndex("ServiceId");
 
                     b.ToTable("Employees");
@@ -86,6 +90,10 @@ namespace SalonManagementSystem.Migrations
 
                     b.Navigation("Service");
                 });
+=======
+                    b.ToTable("Employees");
+                });
+>>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
 #pragma warning restore 612, 618
         }
     }
