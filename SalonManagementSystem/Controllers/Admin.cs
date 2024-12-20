@@ -105,7 +105,9 @@ namespace SalonManagementSystem.Controllers
             return View(services);
         }
 
-        // new to do somthing
+        // new to do
+        // 
+
 
     }
 }
