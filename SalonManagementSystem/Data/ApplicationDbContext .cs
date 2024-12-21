@@ -9,4 +9,25 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Service> Services { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // تعريف العلاقة بين Employee و Service
+        modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Service)
+            .WithMany(s => s.Employees)
+            .HasForeignKey(e => e.ServiceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // تعريف حدود ساعات العمل
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.StartWorkingHours)
+            .IsRequired();
+
+        modelBuilder.Entity<Employee>()
+            .Property(e => e.EndWorkingHours)
+            .IsRequired();
+    }
 }

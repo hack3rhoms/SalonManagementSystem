@@ -1,28 +1,26 @@
-﻿@model IEnumerable<SalonManagementSystem.Models.Employee>
+﻿@model IEnumerable<SalonManagementSystem.Models.Service>
 
-<h2>Employee List</h2>
+<h2>Service List</h2>
 
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Specialization (Service)</th>
-            <th>Start Working Hours</th>
-            <th>End Working Hours</th>
+            <th>Service Name</th>
+            <th>Price</th>
+            <th>Time</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var employee in Model)
+        @foreach (var service in Model)
         {
             <tr>
-                <td>@employee.Name</td>
-                <td>@employee.Service?.Name</td> <!-- عرض اسم الخدمة المرتبطة -->
-                <td>@employee.StartWorkingHours</td>
-                <td>@employee.EndWorkingHours</td>
+                <td>@service.Name</td>
+                <td>@service.Price.ToString("C")</td> <!-- عرض السعر بصيغة العملة -->
+                <td>@service.Duration minutes</td>
                 <td>
-                    <a href="@Url.Action("EditEmployee", "Admin", new { id = employee.Id })" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="@Url.Action("DeleteEmployee", "Admin", new { id = employee.Id })" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="@Url.Action("EditService", "Admin", new { id = service.Id })" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="@Url.Action("DeleteService", "Admin", new { id = service.Id })" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         }

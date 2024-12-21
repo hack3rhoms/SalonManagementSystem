@@ -23,65 +23,69 @@ namespace SalonManagementSystem.Controllers
             return View();
         }
 
-        // Add new Employee
+        // Add new Employee - GET
         public IActionResult AddEmployee()
         {
-            // استرجاع الساعات المحجوزة
-            var bookedSlots = _context.Employees
-                .Select(e => new { e.StartWorkingHours, e.EndWorkingHours })
+            // جلب قائمة الخدمات من قاعدة البيانات
+            var services = _context.Services
+                .Select(s => new { s.Id, s.Name }) // استرجاع المعرف والاسم فقط
                 .ToList();
 
-            // تحديد جميع الأوقات الممكنة (مثال: من 8 صباحًا إلى 6 مساءً)
-            var allSlots = new List<TimeSpan>();
-            for (var time = TimeSpan.FromHours(8); time < TimeSpan.FromHours(18); time += TimeSpan.FromMinutes(60))
+            // التحقق من وجود خدمات
+            if (!services.Any())
             {
-                allSlots.Add(time);
+                // عرض رسالة خطأ إذا لم تكن هناك خدمات
+                ModelState.AddModelError("", "No services available. Please add services before adding an employee.");
+                return View(); // يمكن عرض صفحة خطأ مخصصة هنا
             }
 
-            // استثناء الساعات المحجوزة
-            var availableSlots = allSlots
-                .Where(slot => !bookedSlots.Any(b => slot >= b.StartWorkingHours && slot < b.EndWorkingHours))
-                .ToList();
-
-            ViewBag.AvailableSlots = availableSlots;
-            ViewBag.BookedSlots = bookedSlots;
-
-            // جلب قائمة الخدمات
-            var services = _context.Services
-                .Select(s => new { s.Id, s.Name }) // استرجاع معرّف الخدمة واسمها فقط
-                .ToList();
-
-            // إرسال الخدمات إلى الواجهة
+            // تعيين قائمة الخدمات في ViewBag
             ViewBag.Services = services;
 
-            return View();
+            // تمرير نموذج جديد للعرض
+            return View(new Employee());
         }
 
+
+
+        // Add new Employee - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddEmployee(Employee employee)
         {
-            // البحث عن تضارب الساعات
-            var conflictingSlots = _context.Employees
-                .Where(e =>
-                    (employee.StartWorkingHours < e.EndWorkingHours && employee.EndWorkingHours > e.StartWorkingHours))
-                .ToList();
-
-            if (conflictingSlots.Any())
+            // التحقق من صحة ساعات العمل
+            if (employee.StartWorkingHours >= employee.EndWorkingHours)
             {
-                // إذا كان هناك تضارب، أعرض رسالة خطأ وأعد الساعات المحجوزة للعرض في الواجهة
-                ModelState.AddModelError("", "The selected time slot is not available. Please choose a different time.");
-                ViewBag.BookedSlots = conflictingSlots.Select(e => new { e.StartWorkingHours, e.EndWorkingHours });
+                ModelState.AddModelError("", "End time must be after start time.");
+                ReloadViewBag(); // إعادة تحميل ViewBag في حالة وجود خطأ
                 return View(employee);
             }
+
             if (ModelState.IsValid)
             {
+                // إضافة الموظف إلى قاعدة البيانات
                 _context.Employees.Add(employee);
                 _context.SaveChanges();
                 return RedirectToAction("ManageEmployees");
             }
+
+            ReloadViewBag(); // إعادة تحميل ViewBag في حالة وجود خطأ
             return View(employee);
         }
+
+        // إعادة تحميل ViewBag
+        private void ReloadViewBag()
+        {
+            ViewBag.Services = _context.Services
+                .Select(s => new { s.Id, s.Name })
+                .ToList();
+        }
+
+
+
+
+
+
 
         // View Employees
         public IActionResult ViewEmployees()
@@ -125,6 +129,6 @@ namespace SalonManagementSystem.Controllers
         {
             var services = _context.Services.ToList();
             return View(services);
-        }
+        }   
     }
 }

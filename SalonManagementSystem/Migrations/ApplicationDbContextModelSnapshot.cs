@@ -36,12 +36,9 @@ namespace SalonManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-<<<<<<< HEAD
                     b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
-=======
->>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
                     b.Property<string>("Specialization")
                         .IsRequired()
                         .HasColumnType("text");
@@ -51,7 +48,6 @@ namespace SalonManagementSystem.Migrations
 
                     b.HasKey("Id");
 
-<<<<<<< HEAD
                     b.HasIndex("ServiceId");
 
                     b.ToTable("Employees");
@@ -65,8 +61,8 @@ namespace SalonManagementSystem.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("interval");
+                    b.Property<int>("Duration")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -83,17 +79,18 @@ namespace SalonManagementSystem.Migrations
             modelBuilder.Entity("SalonManagementSystem.Models.Employee", b =>
                 {
                     b.HasOne("SalonManagementSystem.Models.Service", "Service")
-                        .WithMany()
+                        .WithMany("Employees")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Service");
                 });
-=======
-                    b.ToTable("Employees");
+
+            modelBuilder.Entity("SalonManagementSystem.Models.Service", b =>
+                {
+                    b.Navigation("Employees");
                 });
->>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
 #pragma warning restore 612, 618
         }
     }

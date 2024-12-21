@@ -2,42 +2,27 @@
 
 <h2>Add New Employee</h2>
 
-<<<<<<< HEAD
-@* @if (ViewBag.BookedSlots != null)
-=======
-@if (ViewBag.BookedSlots != null)
->>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
-{
-    <div class="alert alert-warning">
-        <strong>Booked Slots:</strong>
-        <ul>
-            @foreach (var slot in ViewBag.BookedSlots)
-            {
-                <li>@slot.StartWorkingHours - @slot.EndWorkingHours</li>
-            }
-        </ul>
-    </div>
-<<<<<<< HEAD
-} *@
-=======
-}
->>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
-
 <form asp-action="AddEmployee" method="post">
     <div class="form-group">
         <label for="Name">Name</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-<<<<<<< HEAD
 
     <div class="form-group">
         <label for="ServiceId">Service</label>
-        <select asp-for="ServiceId" class="form-control">
+        <select asp-for="ServiceId" class="form-control" id="ServiceId">
             <option value="">Select a service</option>
-            @foreach (var service in ViewBag.Services)
+            @if (ViewBag.Services != null)
             {
-                <option value="@service.Id">@service.Name</option>
+                @foreach (var service in ViewBag.Services)
+                {
+                    <option value="@service.Id">@service.Name</option>
+                }
+            }
+            else
+            {
+                <option value="">No services available</option>
             }
         </select>
         <span asp-validation-for="ServiceId" class="text-danger"></span>
@@ -46,91 +31,16 @@
 
     <div class="form-group">
         <label for="StartWorkingHours">Start Working Hours</label>
-        <select asp-for="StartWorkingHours" class="form-control" id="StartWorkingHours">
-            <option value="">Select a start time</option>
-            @foreach (var slot in ViewBag.AvailableSlots)
-            {
-                <option value="@slot">@slot</option>
-            }
-        </select>
-=======
-    <div class="form-group">
-        <label for="Specialization">Specialization</label>
-        <input asp-for="Specialization" class="form-control" />
-        <span asp-validation-for="Specialization" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="StartWorkingHours">Start Working Hours</label>
-        <input asp-for="StartWorkingHours" type="time" class="form-control" />
->>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
+        <input asp-for="StartWorkingHours" type="time" class="form-control" id="StartWorkingHours" step="60" />
         <span asp-validation-for="StartWorkingHours" class="text-danger"></span>
     </div>
+
     <div class="form-group">
         <label for="EndWorkingHours">End Working Hours</label>
-<<<<<<< HEAD
-        <select asp-for="EndWorkingHours" class="form-control" id="EndWorkingHours">
-            <option value="">Select an end time</option>
-            @foreach (var slot in ViewBag.AvailableSlots)
-            {
-                <option value="@slot">@slot</option>
-            }
-        </select>
+        <input asp-for="EndWorkingHours" type="time" class="form-control" id="EndWorkingHours" step="60" />
         <span asp-validation-for="EndWorkingHours" class="text-danger"></span>
     </div>
+
+
     <button type="submit" class="btn btn-primary mt-3">Add Employee</button>
 </form>
-
-@* <script>
-    const bookedSlots = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.BookedSlots));
-=======
-        <input asp-for="EndWorkingHours" type="time" class="form-control" />
-        <span asp-validation-for="EndWorkingHours" class="text-danger"></span>
-    </div>
-        <button type="submit" class="btn btn-primary mt-3">Add Employee</button>
-    </form>
-
-<script>
-    // ساعات العمل المحجوزة التي تم إرسالها من الخادم
-    const bookedSlots = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.BookedSlots));
-
-    // استمع لتغيير وقت البداية
->>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
-    document.getElementById("StartWorkingHours").addEventListener("change", function () {
-        const startTime = this.value;
-        const endInput = document.getElementById("EndWorkingHours");
-
-<<<<<<< HEAD
-        // إعادة تعيين الخيارات لنهاية العمل
-        endInput.innerHTML = "<option value=''>Select an end time</option>";
-
-        // حساب الأوقات المتاحة لنهاية العمل بناءً على وقت البداية
-        const availableSlots = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.AvailableSlots));
-        availableSlots.forEach(slot => {
-            if (slot > startTime) {
-                const option = document.createElement("option");
-                option.value = slot;
-                option.textContent = slot;
-                endInput.appendChild(option);
-            }
-        });
-    });
-</script> *@
-=======
-        // تحقق من تضارب الساعات
-        let isConflict = false;
-        bookedSlots.forEach(slot => {
-            if (startTime >= slot.StartWorkingHours && startTime < slot.EndWorkingHours) {
-                isConflict = true;
-            }
-        });
-
-        if (isConflict) {
-            alert("This time slot is already booked. Please choose a different time.");
-            endInput.value = ""; // إعادة ضبط حقل النهاية
-            endInput.disabled = true; // تعطيل اختيار وقت النهاية
-        } else {
-            endInput.disabled = false; // تمكين حقل وقت النهاية
-        }
-    });
-</script>
->>>>>>> 490f7835d5cf02d4b046ae0999fba9c4b42d4722
