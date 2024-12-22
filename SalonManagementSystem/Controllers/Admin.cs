@@ -23,112 +23,109 @@ namespace SalonManagementSystem.Controllers
             return View();
         }
 
-        // Add new Employee - GET
+        // Add new Employee
         public IActionResult AddEmployee()
         {
-            // جلب قائمة الخدمات من قاعدة البيانات
-            var services = _context.Services
-                .Select(s => new { s.Id, s.Name }) // استرجاع المعرف والاسم فقط
-                .ToList();
-
-            // التحقق من وجود خدمات
-            if (!services.Any())
-            {
-                // عرض رسالة خطأ إذا لم تكن هناك خدمات
-                ModelState.AddModelError("", "No services available. Please add services before adding an employee.");
-                return View(); // يمكن عرض صفحة خطأ مخصصة هنا
-            }
-
-            // تعيين قائمة الخدمات في ViewBag
-            ViewBag.Services = services;
-
-            // تمرير نموذج جديد للعرض
-            return View(new Employee());
+            ViewBag.Services = _context.Services.ToList(); // جلب قائمة الخدمات
+            return View();
         }
-
-
-
-        // Add new Employee - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddEmployee(Employee employee)
+        public async Task<IActionResult> AddEmployee(Employee employee)
         {
-            // التحقق من صحة ساعات العمل
+            // تحقق من صحة النموذج
+            
+                ModelState.AddModelError("", "Please fill all required fields correctly.");
+                ViewBag.Services = _context.Services.ToList();
+            
+
+            // تحقق من الحقول الزمنية
             if (employee.StartWorkingHours >= employee.EndWorkingHours)
             {
-                ModelState.AddModelError("", "End time must be after start time.");
-                ReloadViewBag(); // إعادة تحميل ViewBag في حالة وجود خطأ
+                ModelState.AddModelError("", "Start working hours must be less than end working hours.");
+                ViewBag.Services = _context.Services.ToList();
                 return View(employee);
             }
 
-            if (ModelState.IsValid)
+            // تحقق من تداخل الوقت
+            var isOverlap = _context.Employees
+                .Any(e => e.ServiceId == employee.ServiceId &&
+                          e.StartWorkingHours < employee.EndWorkingHours &&
+                          employee.StartWorkingHours < e.EndWorkingHours);
+
+            if (isOverlap)
             {
-                // إضافة الموظف إلى قاعدة البيانات
-                _context.Employees.Add(employee);
-                _context.SaveChanges();
-                return RedirectToAction("ManageEmployees");
+                ModelState.AddModelError("", "There is a time overlap with another employee for the same service.");
+                ViewBag.Services = _context.Services.ToList();
+                return View(employee);
             }
 
-            ReloadViewBag(); // إعادة تحميل ViewBag في حالة وجود خطأ
-            return View(employee);
-        }
-
-        // إعادة تحميل ViewBag
-        private void ReloadViewBag()
-        {
-            ViewBag.Services = _context.Services
-                .Select(s => new { s.Id, s.Name })
-                .ToList();
+            // حفظ الموظف في قاعدة البيانات
+            
+                _context.Employees.Add(employee);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ViewEmployees");
+            
         }
 
 
 
-
-
-
-
-        // View Employees
+        // عرض قائمة الموظفين
         public IActionResult ViewEmployees()
         {
-            // استرجاع جميع الموظفين مع الخدمات المرتبطة
-            var employees = _context.Employees
-                .Include(e => e.Service) // جلب الخدمة المرتبطة مع كل موظف
-                .ToList();
-
-            // إرسال البيانات إلى الواجهة
+            var employees = _context.Employees.Include(e => e.Service).ToList();
             return View(employees);
         }
+        // إجراء لحذف الموظف
+        public IActionResult DeleteEmployee(int id)
+        {
+            // البحث عن الموظف باستخدام المعرف (id)
+            var employee = _context.Employees.Find(id);
+
+            // التحقق إذا كان الموظف موجودًا
+            if (employee != null)
+            {
+                // إزالة الموظف من قاعدة البيانات
+                _context.Employees.Remove(employee);
+                _context.SaveChanges(); // حفظ التغييرات
+            }
+
+            // إعادة التوجيه إلى قائمة الموظفين
+            return RedirectToAction("ViewEmployees");
+        }
+
+
+
 
         // Manage Services
         public IActionResult ManageServices()
         {
-            // عرض صفحة إنشاء خدمة جديدة
-            return View();
+                                    
+              return View();
         }
 
-        public IActionResult AddService()
-        {
-            return View();
-        }
+         public IActionResult AddService()
+         {
+              return View();
+         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddService(Service service)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Services.Add(service);
-                _context.SaveChanges();
-                return RedirectToAction("ViewServices");
-            }
-            return View(service);
-        }
+         [HttpPost]
+         [ValidateAntiForgeryToken]
+         public IActionResult AddService(Service service)
+         {
+         
+            _context.Services.Add(service);
+            _context.SaveChanges();
+            return RedirectToAction("ViewServices");
+         
+           
+         }
 
-        // View Services
-        public IActionResult ViewServices()
-        {
+         // View Services
+         public IActionResult ViewServices()
+         {
             var services = _context.Services.ToList();
             return View(services);
-        }   
+         }   
     }
 }

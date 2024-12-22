@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SalonManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241221000958_data1")]
-    partial class data1
+    [Migration("20241222145314_data2")]
+    partial class data2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,10 +40,6 @@ namespace SalonManagementSystem.Migrations
 
                     b.Property<int>("ServiceId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Specialization")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<TimeSpan>("StartWorkingHours")
                         .HasColumnType("interval");
@@ -81,12 +77,17 @@ namespace SalonManagementSystem.Migrations
             modelBuilder.Entity("SalonManagementSystem.Models.Employee", b =>
                 {
                     b.HasOne("SalonManagementSystem.Models.Service", "Service")
-                        .WithMany()
+                        .WithMany("Employees")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("SalonManagementSystem.Models.Service", b =>
+                {
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }
