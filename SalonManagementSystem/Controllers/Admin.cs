@@ -109,23 +109,75 @@ namespace SalonManagementSystem.Controllers
               return View();
          }
 
-         [HttpPost]
-         [ValidateAntiForgeryToken]
-         public IActionResult AddService(Service service)
-         {
-         
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddService(Service service, IFormFile ServiceImage)
+        {
+            
+                using (var memoryStream = new MemoryStream())
+                {
+                    ServiceImage.CopyTo(memoryStream);
+                    service.ImageData = memoryStream.ToArray(); // تخزين البيانات كـ byte[]
+                    service.ImageType = ServiceImage.ContentType; // تخزين نوع الصورة (مثل image/jpeg)
+                }
+
+            // حفظ البيانات في قاعدة البيانات
             _context.Services.Add(service);
             _context.SaveChanges();
             return RedirectToAction("ViewServices");
-         
-           
-         }
+        }
 
-         // View Services
-         public IActionResult ViewServices()
+        // View Services
+        public IActionResult ViewServices()
          {
             var services = _context.Services.ToList();
             return View(services);
-         }   
+         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteService(int id)
+        {
+            var service = _context.Services.Find(id);
+            if (service != null)
+            {
+                _context.Services.Remove(service);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("ViewServices");
+        }
+
+
+        //New 
+        public IActionResult Appointments()
+        {
+            // جلب قائمة المواعيد مع معلومات الخدمة
+            var appointments = _context.Appointments
+                .Include(a => a.Service) // تضمين معلومات الخدمة
+                .OrderBy(a => a.AppointmentDateTime) // ترتيب حسب التاريخ
+                .ToList();
+
+            return View(appointments);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteAppointment(int id)
+        {
+            // البحث عن الموعد بناءً على المعرّف
+            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == id);
+            if (appointment == null)
+            {
+                TempData["ErrorMessage"] = "Appointment not found.";
+                return RedirectToAction("Appointments");
+            }
+
+            // حذف الموعد
+            _context.Appointments.Remove(appointment);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Appointment deleted successfully.";
+            return RedirectToAction("Appointments");
+        }
+
+
     }
 }

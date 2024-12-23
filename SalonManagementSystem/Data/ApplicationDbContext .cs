@@ -9,6 +9,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Service> Services { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

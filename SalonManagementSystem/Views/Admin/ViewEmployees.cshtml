@@ -1,28 +1,33 @@
 ﻿@model IEnumerable<SalonManagementSystem.Models.Employee>
 
-<h2>Employee List</h2>
-
-<table class="table table-hover shadow-sm">
-    <thead class="thead-light">
-        <tr>
-            <th>Name</th>
-            <th>Specialization</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var employee in Model)
+<div class="container mt-5">
+    <h2 class="text-center">Employees List</h2>
+    <div class="row">
+        @if (Model != null && Model.Any())
         {
-            <tr>
-                <td>@employee.Name</td>
-                <td>@employee.StartWorkingHours</td>
-                <td>@employee.EndWorkingHours</td>
-                <td>
-                    <a href="@Url.Action("DeleteEmployee", "Admin", new { id = employee.Id })" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
+            foreach (var employee in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-light rounded">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">@employee.Name</h5>
+                            <p class="card-text text-muted">
+                                Service: @employee.Service?.Name <br />
+                                Working Hours: @employee.StartWorkingHours.ToString("hh\\:mm") - @employee.EndWorkingHours.ToString("hh\\:mm")
+                            </p>
+                            <a href="@Url.Action("DeleteEmployee", "Admin", new { id = employee.Id })" class="btn btn-danger btn-block">
+                                Delete Employee
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="col-12">
+                <p class="text-center text-muted">No employees found.</p>
+            </div>
+        }
+    </div>
+</div>

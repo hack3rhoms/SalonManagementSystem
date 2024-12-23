@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<SalonManagementSystem.Models.Service>
+
+@{
     ViewData["Title"] = "Home - Beauty Salon";
 }
 
@@ -16,53 +18,56 @@
             <p class="text-dark lead mb-4">We are here to help you achieve the best beauty experience.</p>
             <!-- Button for action -->
             <a href="@Url.Action("Services", "Home")" class="btn btn-primary btn-lg">Explore Our Services</a>
-
         </div>
     </div>
-</div>
 
-<br />
-<br />
-<br />
+    <br />
+    <br />
+    <br />
 
-    <!-- Available Employees Section -->
+    <!-- Available Services Section -->
     <div class="row mb-4">
         <div class="col">
-            <h3>Available Employees Today</h3>
+            <h3>Available Services</h3>
             <div class="row">
-                <!-- Employee 1 -->
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="Employee 1">
-                        <div class="card-body">
-                            <h5 class="card-title">Asma Mohamed</h5>
-                            <p class="card-text">Specialized in Haircuts and Hair Coloring</p>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var service in Model)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                @if (service.ImageData != null)
+                                {
+                                    <img src="data:@service.ImageType;base64,@Convert.ToBase64String(service.ImageData)" class="card-img-top" alt="@service.Name">
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="@service.Name">
+                                }
+                                <div class="card-body">
+                                    <h5 class="card-title">@service.Name</h5>
+                                    <p class="card-text">Price: $@service.Price</p>
+                                    <p class="card-text">Duration: @service.Duration minutes</p>
+
+                                    <!-- سجل Button -->
+                                    <a href="@Url.Action("Appointments", "Home", new { serviceId = service.Id })"
+                                       class="btn btn-success btn-block">Register</a>
+                                </div>
+                            </div>
                         </div>
+                    }
+                }
+                else
+                {
+                    <div class="col">
+                        <p class="text-muted">No services available at the moment.</p>
                     </div>
-                </div>
-                <!-- Employee 2 -->
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="Employee 2">
-                        <div class="card-body">
-                            <h5 class="card-title">Mohamed Ali</h5>
-                            <p class="card-text">Expert in Special Hairstyles and Facial Cleaning</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Employee 3 -->
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="Employee 3">
-                        <div class="card-body">
-                            <h5 class="card-title">Sara Khaled</h5>
-                            <p class="card-text">Expert in Body Massage and Hair Coloring</p>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>
+
+
 
     <!-- Appointment Booking Section -->
     <div class="row mb-4">

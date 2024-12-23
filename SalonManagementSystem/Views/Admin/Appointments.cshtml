@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SalonManagementSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Appointments - Admin Panel";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">Appointments</h1>
+    <div class="table-responsive mt-4">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Service</th>
+                    <th>Client Name</th>
+                    <th>Appointment Date</th>
+                    <th>Appointment Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    int counter = 1;
+                    foreach (var appointment in Model)
+                    {
+                        <tr>
+                            <td>@counter</td>
+                            <td>@appointment.Service.Name</td>
+                            <td>@appointment.UserId</td> <!-- عرض اسم أو معرف المستخدم -->
+                            <td>@appointment.AppointmentDateTime.ToString("yyyy-MM-dd")</td>
+                            <td>@appointment.AppointmentDateTime.ToString("HH:mm")</td>
+                            <td>
+                                <!-- زر حذف -->
+                                <form asp-action="DeleteAppointment" asp-controller="Admin" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@appointment.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure you want to delete this appointment?')">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+
+                        </tr>
+                        counter++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">No appointments available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

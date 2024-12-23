@@ -1,0 +1,43 @@
+﻿@model SalonManagementSystem.Models.AppointmentViewModel
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">Book Your Appointment</h1>
+    <div class="card mt-4">
+        <div class="card-header bg-primary text-white">
+            <h5>@Model.Service.Name</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Price:</strong> $@Model.Service.Price</p>
+            <p><strong>Duration:</strong> @Model.Service.Duration minutes</p>
+
+            <form asp-action="ConfirmAppointment" asp-controller="Home" method="post">
+                <input type="hidden" name="serviceId" value="@Model.Service.Id" />
+
+                <!-- اختيار اليوم -->
+                <div class="form-group">
+                    <label for="appointmentDate">Choose Date:</label>
+                    <input type="date" class="form-control" id="appointmentDate" name="appointmentDate"
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                </div>
+
+
+                <!-- اختيار الوقت -->
+                <div class="form-group">
+                    <label for="appointmentTime">Choose Time:</label>
+                    <select class="form-control" id="appointmentTime" name="appointmentTime" required>
+                        @foreach (var time in Model.AvailableTimes)
+                        {
+                            <option value="@time">@time</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-block mt-3">Confirm Appointment</button>
+            </form>
+        </div>
+    </div>
+</div>
