@@ -3,6 +3,8 @@
 <h2>Add New Employee</h2>
 
 <form asp-action="AddEmployee" method="post">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" }) <!-- يعرض جميع الأخطاء هنا -->
+
     <div class="form-group">
         <label for="Name">Name</label>
         <input asp-for="Name" class="form-control" />
@@ -15,19 +17,17 @@
         <span asp-validation-for="ServiceId" class="text-danger"></span>
     </div>
 
-
     <div class="form-group">
         <label for="StartWorkingHours">Start Working Hours</label>
-        <input asp-for="StartWorkingHours" class="form-control" type="time" />
+        <select asp-for="StartWorkingHours" class="form-control" asp-items="@(new SelectList(ViewBag.TimeSlots, "Value", "Text"))"></select>
         <span asp-validation-for="StartWorkingHours" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label for="EndWorkingHours">End Working Hours</label>
-        <input asp-for="EndWorkingHours" class="form-control" type="time" />
+        <select asp-for="EndWorkingHours" class="form-control" asp-items="@(new SelectList(ViewBag.TimeSlots, "Value", "Text"))"></select>
         <span asp-validation-for="EndWorkingHours" class="text-danger"></span>
     </div>
-
 
     <button type="submit" class="btn btn-primary mt-3">Add Employee</button>
 </form>

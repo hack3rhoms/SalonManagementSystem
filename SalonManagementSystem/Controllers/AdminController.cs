@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SalonManagementSystem.Models;
 
 namespace SalonManagementSystem.Controllers
 {
-    public class Admin : Controller
+    public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public Admin(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -27,27 +28,17 @@ namespace SalonManagementSystem.Controllers
         public IActionResult AddEmployee()
         {
             ViewBag.Services = _context.Services.ToList(); // جلب قائمة الخدمات
+            ViewBag.TimeSlots = GetTimeSlots(); // جلب قائمة الأوقات
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEmployee(Employee employee)
         {
-            // تحقق من صحة النموذج
-            
-                ModelState.AddModelError("", "Please fill all required fields correctly.");
-                ViewBag.Services = _context.Services.ToList();
-            
+            ViewBag.Services = _context.Services.ToList();
+            ViewBag.TimeSlots = GetTimeSlots();
 
-            // تحقق من الحقول الزمنية
-            if (employee.StartWorkingHours >= employee.EndWorkingHours)
-            {
-                ModelState.AddModelError("", "Start working hours must be less than end working hours.");
-                ViewBag.Services = _context.Services.ToList();
-                return View(employee);
-            }
-
-            // تحقق من تداخل الوقت
             var isOverlap = _context.Employees
                 .Any(e => e.ServiceId == employee.ServiceId &&
                           e.StartWorkingHours < employee.EndWorkingHours &&
@@ -56,16 +47,37 @@ namespace SalonManagementSystem.Controllers
             if (isOverlap)
             {
                 ModelState.AddModelError("", "There is a time overlap with another employee for the same service.");
-                ViewBag.Services = _context.Services.ToList();
                 return View(employee);
             }
 
-            // حفظ الموظف في قاعدة البيانات
-            
-                _context.Employees.Add(employee);
+            _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("ViewEmployees");
-            
+        }
+        [HttpGet]
+        private List<SelectListItem> GetTimeSlots(int serviceId = 0)
+        {
+            var timeSlots = new List<SelectListItem>();
+            var startTime = new TimeSpan(8, 0, 0); // الساعة 8:00 صباحًا
+            var endTime = new TimeSpan(22, 0, 0); // الساعة 10:00 مساءً
+
+            // جلب الأوقات المحجوزة بالفعل
+            var bookedTimes = _context.Employees
+                .Where(e => e.ServiceId == serviceId)
+                .Select(e => e.StartWorkingHours)
+                .ToList();
+
+            for (var time = startTime; time <= endTime; time = time.Add(new TimeSpan(0, 30, 0))) // فواصل نصف ساعة
+            {
+                var isBooked = bookedTimes.Contains(time); // تحقق إذا كان الوقت محجوز
+                timeSlots.Add(new SelectListItem
+                {
+                    Value = time.ToString(@"hh\:mm"),
+                    Text = time.ToString(@"hh\:mm"),
+                    Disabled = isBooked // تعطيل الوقت إذا كان محجوز
+                });
+            }
+            return timeSlots;
         }
 
 

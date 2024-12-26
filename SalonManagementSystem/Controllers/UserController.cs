@@ -2,7 +2,7 @@
 
 namespace SalonManagementSystem.Controllers
 {
-    public class User : Controller
+    public class UserController : Controller
     {
         public IActionResult Welcome()
         {
