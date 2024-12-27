@@ -4,38 +4,35 @@
     ViewData["Title"] = "Login";
 }
 
-<h2 class="text-center mb-4">Login</h2>
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card shadow-lg" style="width: 350px; border-radius: 15px; overflow: hidden;">
+        <div class="card-body">
+            <h3 class="text-center mb-4">Login</h3>
+            <form asp-action="Login" method="post" id="loginForm">
+                @Html.AntiForgeryToken()
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg">
-                <div class="card-body">
-                    <h4 class="card-title text-center mb-4">Welcome Back</h4>
-                    <form asp-action="Login" method="post" id="loginForm">
-                        @Html.AntiForgeryToken()
-
-                        <div class="form-group">
-                            <label for="Username" class="font-weight-bold">Username</label>
-                            <input asp-for="Username" class="form-control" placeholder="Enter your username" />
-                            <span asp-validation-for="Username" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Password" class="font-weight-bold">Password</label>
-                            <input asp-for="Password" class="form-control" type="password" placeholder="Enter your password" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-block mt-4">Login</button>
-
-                        <div class="text-center mt-3">
-                            <a href="@Url.Action("Register", "Home")">Don't have an account? Register here</a>
-                        </div>
-                    </form>
+                <div class="form-group mb-3">
+                    <label for="Email" class="font-weight-bold">Email</label>
+                    <input asp-for="Email" class="form-control border-0 border-bottom" type="email" placeholder="Enter your email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-            </div>
+
+
+                <div class="form-group mb-3">
+                    <label for="Password" class="font-weight-bold">Password</label>
+                    <input asp-for="Password" class="form-control border-0 border-bottom" type="password" placeholder="Enter your password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block w-100 mt-4 py-2">Login</button>
+
+                <div class="text-center mt-4">
+                    <span>Don't have an account?<a href="@Url.Action("Register", "Home")" class="text-primary text-decoration-none">Signup</a></span>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
+
+}
