@@ -1,28 +1,39 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace SalonManagementSystem.Models
 {
     public class DbInitializer
     {
-        public static void Initialize(ApplicationDbContext  _context) 
+        public static void Initialize(ApplicationDbContext _context)
         {
-
+            // ضمان إنشاء قاعدة البيانات إذا لم تكن موجودة
             _context.Database.EnsureCreated();
 
-
+            // التحقق إذا كان هناك مدراء موجودون بالفعل
             if (_context.Admin.Any())
             {
-                return;
+                return; // إذا كان هناك مدراء، لا تضف شيئًا
             }
 
-            var admin = new Admin
+            // تعريف مديرين فقط
+            var admins = new[]
             {
-                Email = "a@gmail.com",
-                Password = "1234"
+                new Admin
+                {
+                    Email = "b201210575@gmail.com",
+                    Password = "b201210575"
+                },
+                new Admin
+                {
+                    Email = "g201210587@gmail.com",
+                    Password = "g201210587"
+                }
             };
 
-            _context.Admin.Add(admin); 
+            // إضافة المديرين إلى قاعدة البيانات
+            _context.Admin.AddRange(admins);
             _context.SaveChanges();
         }
     }

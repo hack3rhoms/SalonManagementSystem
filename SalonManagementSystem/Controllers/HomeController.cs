@@ -59,6 +59,17 @@ namespace SalonManagementSystem.Controllers
                     availableTimes.Add(new TimeSpan(hour, 30, 0)); // كل نصف ساعة
                 }
 
+                // الحصول على الأوقات المحجوزة (مقارنة فقط بالوقت)
+                var reservedTimes = _context.Appointments
+                    .Where(a => a.ServiceId == serviceId)
+                    .Select(a => a.AppointmentDateTime.TimeOfDay) // استخدام TimeOfDay للحصول على الوقت فقط
+                    .ToList();
+
+                // إزالة الأوقات المحجوزة من الأوقات المتاحة
+                availableTimes = availableTimes
+                    .Where(time => !reservedTimes.Contains(time))
+                    .ToList();
+
                 // إنشاء نموذج لعرض الأوقات
                 var model = new AppointmentViewModel
                 {
@@ -69,6 +80,7 @@ namespace SalonManagementSystem.Controllers
                 return View(model);
             }
         }
+
         [HttpPost]
         public IActionResult ConfirmAppointment(int serviceId, DateTime appointmentDate, TimeSpan appointmentTime)
         {
@@ -77,7 +89,11 @@ namespace SalonManagementSystem.Controllers
             {
                 return NotFound();
             }
-
+            var userId = HttpContext.Session.GetInt32("Id");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Home"); // التأكد من أن المستخدم قد قام بتسجيل الدخول
+            }
             // إنشاء الموعد
             var localAppointmentDateTime = appointmentDate.Add(appointmentTime); // دمج التاريخ والوقت
             var utcAppointmentDateTime = DateTime.SpecifyKind(localAppointmentDateTime, DateTimeKind.Utc); // تحديد النوع كـ UTC
@@ -86,7 +102,7 @@ namespace SalonManagementSystem.Controllers
             {
                 ServiceId = serviceId,
                 AppointmentDateTime = utcAppointmentDateTime, 
-                UserId = "currentUserId" 
+                UserId = userId.Value
             };
 
             _context.Appointments.Add(appointment);
@@ -95,13 +111,16 @@ namespace SalonManagementSystem.Controllers
             TempData["SuccessMessage"] = "Your appointment has been booked successfully!";
             return RedirectToAction("Index", "Home");
         }
+
         [HttpGet]
         public async Task<IActionResult> Login()
         {
             if (HttpContext.Session.GetInt32("AdminId") != null)
             {
+
                 TempData["LoginMessage"] = "You are already logged in as an Admin.";
                 return RedirectToAction("Welcome", "Admin");
+
             }
 
             // التحقق مما إذا كان المستخدم مسجل الدخول بالفعل كمدرس

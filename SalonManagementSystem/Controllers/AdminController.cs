@@ -16,20 +16,45 @@ namespace SalonManagementSystem.Controllers
 
         public IActionResult Welcome()
         {
-            return View();
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         public IActionResult ManageEmployees()
         {
-            return View();
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                return View();
+            }        
         }
 
         // Add new Employee
         public IActionResult AddEmployee()
         {
-            ViewBag.Services = _context.Services.ToList(); // جلب قائمة الخدمات
-            ViewBag.TimeSlots = GetTimeSlots(); // جلب قائمة الأوقات
-            return View();
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+
+                ViewBag.Services = _context.Services.ToList(); // جلب قائمة الخدمات
+                ViewBag.TimeSlots = GetTimeSlots(); // جلب قائمة الأوقات
+                return View();
+            }
         }
 
         [HttpPost]
@@ -85,8 +110,16 @@ namespace SalonManagementSystem.Controllers
         // عرض قائمة الموظفين
         public IActionResult ViewEmployees()
         {
-            var employees = _context.Employees.Include(e => e.Service).ToList();
-            return View(employees);
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                var employees = _context.Employees.Include(e => e.Service).ToList();
+                return View(employees);
+            }
         }
         // إجراء لحذف الموظف
         public IActionResult DeleteEmployee(int id)
@@ -112,13 +145,29 @@ namespace SalonManagementSystem.Controllers
         // Manage Services
         public IActionResult ManageServices()
         {
-                                    
-              return View();
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+
+                return View();
+            }
         }
 
          public IActionResult AddService()
          {
-              return View();
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                return View();
+            }
          }
 
         [HttpPost]
@@ -142,8 +191,16 @@ namespace SalonManagementSystem.Controllers
         // View Services
         public IActionResult ViewServices()
          {
-            var services = _context.Services.ToList();
-            return View(services);
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                var services = _context.Services.ToList();
+                return View(services);
+            }
          }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -162,13 +219,21 @@ namespace SalonManagementSystem.Controllers
         //New 
         public IActionResult Appointments()
         {
-            // جلب قائمة المواعيد مع معلومات الخدمة
-            var appointments = _context.Appointments
+            if (HttpContext.Session.GetInt32("AdminId") is null)
+            {
+                TempData["error"] = "please login first";
+                return RedirectToAction("Login", "Home");
+            }
+            else
+            {
+                // جلب قائمة المواعيد مع معلومات الخدمة
+                var appointments = _context.Appointments
                 .Include(a => a.Service) // تضمين معلومات الخدمة
                 .OrderBy(a => a.AppointmentDateTime) // ترتيب حسب التاريخ
                 .ToList();
 
-            return View(appointments);
+                return View(appointments);
+            }
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

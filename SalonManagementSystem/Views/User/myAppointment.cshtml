@@ -1,0 +1,46 @@
+﻿@model IEnumerable<SalonManagementSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">My Appointments</h1>
+
+    @if (!Model.Any())
+    {
+        <p class="text-center text-muted">You have no appointments scheduled.</p>
+    }
+    else
+    {
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Service Name</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model)
+                {
+                    <tr>
+                        <td>@appointment.Id</td>
+                        <td>@appointment.Service?.Name"</td>
+                        <td>$@appointment.Service?.Price.ToString("F2")</td>
+                        <td>@appointment.AppointmentDateTime.ToString("yyyy-MM-dd")</td>
+                        <td>@appointment.AppointmentDateTime.ToString("hh:mm tt")</td>
+                        <td>
+                            <form method="post" action="@Url.Action("DeleteAppointment", "User", new { id = appointment.Id })">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

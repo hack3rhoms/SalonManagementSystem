@@ -6,8 +6,8 @@
             public int ServiceId { get; set; }
             public Service Service { get; set; }
             public DateTime AppointmentDateTime { get; set; }
-            public string UserId { get; set; } // اختياري، لربط الحجز بالمستخدم
-        
 
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

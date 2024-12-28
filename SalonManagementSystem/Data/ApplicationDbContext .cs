@@ -35,5 +35,11 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Employee>()
             .Property(e => e.EndWorkingHours)
             .IsRequired();
+
+        modelBuilder.Entity<Appointment>()
+      .HasOne(a => a.User)
+      .WithMany(u => u.Appointments)
+      .HasForeignKey(a => a.UserId)
+      .OnDelete(DeleteBehavior.Cascade); 
     }
 }

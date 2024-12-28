@@ -56,13 +56,14 @@ namespace SalonManagementSystem.Migrations
                     b.Property<int>("ServiceId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ServiceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Appointments");
                 });
@@ -159,7 +160,15 @@ namespace SalonManagementSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SalonManagementSystem.Models.User", "User")
+                        .WithMany("Appointments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Service");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SalonManagementSystem.Models.Employee", b =>
@@ -176,6 +185,11 @@ namespace SalonManagementSystem.Migrations
             modelBuilder.Entity("SalonManagementSystem.Models.Service", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("SalonManagementSystem.Models.User", b =>
+                {
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }
